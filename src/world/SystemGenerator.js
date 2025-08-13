@@ -77,10 +77,55 @@ function randomPlanetConfigs(starRadius, rand, randInt, choice) {
 
   for (let i = 0; i < numPlanets; i += 1) {
     const name = randomName(rand, randInt, choice);
-    const radius = rand(0.4, 3.2) * (i < 4 ? 1 : rand(1, 1.5));
-    const hue = rand(0, 360);
-    const saturation = rand(0.3, 0.9);
-    const lightness = rand(0.3, 0.7);
+    
+    // Определяем тип планеты в зависимости от расстояния от звезды
+    let planetType = 'rocky';
+    let radius = rand(0.4, 1.8);
+    
+    if (i < 2) {
+      // Внутренние планеты - каменистые, меньшего размера
+      planetType = 'rocky';
+      radius = rand(0.4, 1.2);
+    } else if (i < 4) {
+      // Средние планеты - могут быть ледяными или каменистыми
+      planetType = rand(0, 1) < 0.3 ? 'ice' : 'rocky';
+      radius = rand(0.8, 1.8);
+    } else {
+      // Внешние планеты - газовые гиганты или ледяные
+      const typeRoll = rand(0, 1);
+      if (typeRoll < 0.6) {
+        planetType = 'gas';
+        radius = rand(2.0, 4.5); // Газовые гиганты крупнее
+      } else {
+        planetType = 'ice';
+        radius = rand(1.0, 2.2);
+      }
+    }
+
+    // Цвет в зависимости от типа планеты
+    let hue, saturation, lightness;
+    switch (planetType) {
+      case 'gas':
+        // Газовые гиганты - коричневые, оранжевые, желтые тона
+        hue = rand(20, 60);
+        saturation = rand(0.4, 0.8);
+        lightness = rand(0.4, 0.7);
+        break;
+      case 'ice':
+        // Ледяные планеты - голубые, белые тона
+        hue = rand(180, 240);
+        saturation = rand(0.3, 0.7);
+        lightness = rand(0.6, 0.9);
+        break;
+      case 'rocky':
+      default:
+        // Каменистые планеты - разнообразные цвета
+        hue = rand(0, 360);
+        saturation = rand(0.3, 0.9);
+        lightness = rand(0.3, 0.7);
+        break;
+    }
+    
     const color = hslToHex(hue, saturation, lightness);
 
     const orbitRadius = orbit; // полуось a
@@ -96,9 +141,10 @@ function randomPlanetConfigs(starRadius, rand, randInt, choice) {
     const argPeriapsis = rand(0, Math.PI * 2);
     const initialAnomaly = rand(0, Math.PI * 2);
 
-    // Вероятность колец
+    // Вероятность колец (выше для газовых гигантов)
     let ring = null;
-    if (rand(0, 1) < 0.2 && radius > 1.2) {
+    const ringChance = planetType === 'gas' ? 0.4 : 0.15;
+    if (rand(0, 1) < ringChance && radius > 1.2) {
       ring = {
         innerRadius: radius * rand(1.2, 1.5),
         outerRadius: radius * rand(1.8, 2.6),
@@ -107,8 +153,24 @@ function randomPlanetConfigs(starRadius, rand, randInt, choice) {
       };
     }
 
-    // Атмосферу отключаем полностью
+    // Атмосфера для газовых гигантов и некоторых других планет
     let atmosphere = null;
+    if (planetType === 'gas') {
+      atmosphere = {
+        thickness: radius * rand(0.08, 0.15),
+        color: color,
+        intensity: rand(0.2, 0.4),
+        fresnelPower: rand(1.5, 2.5)
+      };
+    } else if (planetType === 'rocky' && rand(0, 1) < 0.3) {
+      // Некоторые каменистые планеты имеют атмосферу
+      atmosphere = {
+        thickness: radius * rand(0.05, 0.1),
+        color: 0x88ccff,
+        intensity: rand(0.6, 1.0),
+        fresnelPower: rand(2.0, 3.5)
+      };
+    }
 
     planets.push({
       name,
@@ -120,6 +182,8 @@ function randomPlanetConfigs(starRadius, rand, randInt, choice) {
       tilt,
       ring,
       atmosphere,
+      planetType,
+      seed: rand(0, 1000),
       eccentricity,
       inclination,
       ascendingNode,

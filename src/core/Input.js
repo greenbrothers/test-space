@@ -38,11 +38,6 @@ export default class Input {
       case 'ArrowRight':
       case 'KeyD':
         this.moveRight = true; break;
-      case 'Space':
-        this.moveUp = true; break;
-      case 'ShiftLeft':
-      case 'ShiftRight':
-        this.moveDown = true; break;
     }
   }
 
@@ -60,11 +55,6 @@ export default class Input {
       case 'ArrowRight':
       case 'KeyD':
         this.moveRight = false; break;
-      case 'Space':
-        this.moveUp = false; break;
-      case 'ShiftLeft':
-      case 'ShiftRight':
-        this.moveDown = false; break;
     }
   }
 }

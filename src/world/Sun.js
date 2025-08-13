@@ -12,6 +12,11 @@ export default class Sun {
 
     // Точечный источник света от Солнца
     this.light = new THREE.PointLight(lightColor, lightIntensity, 0, 2);
+    this.light.castShadow = true;
+    this.light.shadow.mapSize.width = 2048;
+    this.light.shadow.mapSize.height = 2048;
+    this.light.shadow.camera.near = 0.1;
+    this.light.shadow.camera.far = 1000;
     this.group.add(this.light);
 
     // Корона/сияние — два спрайта с аддитивным смешением
