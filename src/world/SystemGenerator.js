@@ -1,5 +1,6 @@
 // Генератор случайной звёздной системы (с сидом)
 
+const SCALE_FACTOR = 8;
 // строка -> 32-битный сид
 function stringToSeed(str) {
   let h = 2166136261 >>> 0;
@@ -54,7 +55,7 @@ function randomStar(rand, randInt, choice) {
   const lightness = rand(0.5, 0.7);
   const color = hslToHex(hue, saturation, lightness);
   const lightColor = hslToHex(hue, 0.9, 0.75);
-  const radius = rand(7, 16);
+  const radius = rand(7, 16) * SCALE_FACTOR;
   // Яркость растёт ~ с площадью (упрощённо)
   const lightIntensity = Math.round(1200 + Math.pow(radius, 2) * 12);
   return { radius, color, lightColor, lightIntensity };
@@ -72,7 +73,7 @@ function randomName(rand, randInt, choice) {
 function randomPlanetConfigs(starRadius, rand, randInt, choice) {
   const numPlanets = randInt(4, 10);
   const planets = [];
-  let orbit = starRadius * 2.5 + rand(6, 12);
+  let orbit = starRadius * 2.5 + rand(6, 12) * SCALE_FACTOR;
   let maxOrbit = orbit;
 
   for (let i = 0; i < numPlanets; i += 1) {
@@ -80,25 +81,25 @@ function randomPlanetConfigs(starRadius, rand, randInt, choice) {
     
     // Определяем тип планеты в зависимости от расстояния от звезды
     let planetType = 'rocky';
-    let radius = rand(0.4, 1.8);
+    let radius = rand(0.4, 1.8) * SCALE_FACTOR;
     
     if (i < 2) {
       // Внутренние планеты - каменистые, меньшего размера
       planetType = 'rocky';
-      radius = rand(0.4, 1.2);
+      radius = rand(0.4, 1.2) * SCALE_FACTOR;
     } else if (i < 4) {
       // Средние планеты - могут быть ледяными или каменистыми
       planetType = rand(0, 1) < 0.3 ? 'ice' : 'rocky';
-      radius = rand(0.8, 1.8);
+      radius = rand(0.8, 1.8) * SCALE_FACTOR;
     } else {
       // Внешние планеты - газовые гиганты или ледяные
       const typeRoll = rand(0, 1);
       if (typeRoll < 0.6) {
         planetType = 'gas';
-        radius = rand(2.0, 4.5); // Газовые гиганты крупнее
+        radius = rand(2.0, 4.5) * SCALE_FACTOR; // Газовые гиганты крупнее
       } else {
         planetType = 'ice';
-        radius = rand(1.0, 2.2);
+        radius = rand(1.0, 2.2) * SCALE_FACTOR;
       }
     }
 
@@ -144,7 +145,7 @@ function randomPlanetConfigs(starRadius, rand, randInt, choice) {
     // Вероятность колец (выше для газовых гигантов)
     let ring = null;
     const ringChance = planetType === 'gas' ? 0.4 : 0.15;
-    if (rand(0, 1) < ringChance && radius > 1.2) {
+    if (rand(0, 1) < ringChance && radius > 1.2 * SCALE_FACTOR) {
       ring = {
         innerRadius: radius * rand(1.2, 1.5),
         outerRadius: radius * rand(1.8, 2.6),
@@ -192,7 +193,7 @@ function randomPlanetConfigs(starRadius, rand, randInt, choice) {
     });
 
     // Следующая орбита с разбросом
-    orbit += rand(6, 12) + radius * 1.5;
+    orbit += rand(6, 12) * SCALE_FACTOR + radius * 1.5;
     if (orbit > maxOrbit) maxOrbit = orbit;
   }
 
@@ -206,6 +207,7 @@ export function generateSystem(seed) {
   const { rand, randInt, choice } = makeRandUtils(rng);
 
   const sun = randomStar(rand, randInt, choice);
+  // Передаём уже увеличенный радиус звезды
   const { planets, maxOrbit } = randomPlanetConfigs(sun.radius, rand, randInt, choice);
   return { sun, planets, maxOrbit, seed: seedValue };
 }
