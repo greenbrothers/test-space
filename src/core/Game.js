@@ -18,10 +18,10 @@ export default class Game {
   constructor() {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(
-      75,
+      90, // угол обзора 
       window.innerWidth / window.innerHeight,
       0.1,
-      1000
+      100000
     );
     this.renderer = new THREE.WebGLRenderer({
       canvas: document.getElementById('c'),
@@ -141,7 +141,7 @@ export default class Game {
     this.initListeners();
 
     this.input = new Input(window);
-    this.flySpeed = 14; // увеличена базовая скорость W/S в 2 раза
+    this.flySpeed = 1400; // увеличена базовая скорость W/S в 2 раза
     // Параметры разгона/торможения для W/S
     this.currentForwardSpeed = 0; // текущая скорость (со знаком)
     this.lastMoveDir = new THREE.Vector3(0, 0, -1); // последнее направление движения

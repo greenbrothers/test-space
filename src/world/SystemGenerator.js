@@ -1,6 +1,6 @@
 // Генератор случайной звёздной системы (с сидом)
 
-const SCALE_FACTOR = 8;
+const SCALE_FACTOR = 100;
 // строка -> 32-битный сид
 function stringToSeed(str) {
   let h = 2166136261 >>> 0;
