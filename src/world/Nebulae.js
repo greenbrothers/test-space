@@ -44,7 +44,7 @@ export default class Nebulae {
         blending: THREE.AdditiveBlending,
         depthWrite: false,
         depthTest: true,
-        transparent: true,
+        transparent: false,
         opacity: 0.25 + 0.15 * rng(),
         side: THREE.DoubleSide,
       });

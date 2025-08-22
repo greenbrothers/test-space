@@ -127,7 +127,7 @@ export default class StarClusters {
             gl_FragColor = vec4(vColor * intensity, intensity);
           }
         `,
-        transparent: true,
+        transparent: false,
         depthWrite: false,
         depthTest: true,
         blending: THREE.AdditiveBlending,

@@ -230,7 +230,7 @@ export default class Stars {
           gl_FragColor = vec4(vColor * intensity, intensity);
         }
       `,
-      transparent: true,
+      transparent: false,
       depthWrite: false,
       depthTest: true,
       blending: THREE.AdditiveBlending,
@@ -240,7 +240,7 @@ export default class Stars {
     material.toneMapped = false; // яркость звёзд не гасим тон-маппингом
 
     const points = new THREE.Points(geometry, material);
-    points.frustumCulled = false; // не отсекать, чтобы не мерцало
+    points.frustumCulled = true; // не отсекать, чтобы не мерцало
     points.renderOrder = -1000; // рисуем стабильно до остального
     points.matrixAutoUpdate = false;
     return points;
