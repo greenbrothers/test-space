@@ -159,8 +159,7 @@ export default class Planet {
       map: iceTexture,
       roughness: 0.4, // менее блестящий лед
       metalness: 0.0, // убираем металлический блеск
-      transparent: true,
-      opacity: 0.95,
+      // прозрачность убрана, чтобы ледяные планеты были полностью непрозрачными
     });
   }
 
